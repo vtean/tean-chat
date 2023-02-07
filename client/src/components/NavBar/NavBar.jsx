@@ -16,7 +16,7 @@ const NavBar = () => {
                     <Link to="/">TeanChat</Link>
                 </div>
                 {user && (
-                    <span className="text-primary">
+                    <span>
                         Logged in as <strong>{user.name}</strong>
                     </span>
                 )}

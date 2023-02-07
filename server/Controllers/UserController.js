@@ -58,7 +58,8 @@ class UserController {
 
         try {
             const user = await userModel.findById(userId);
-            res.status(200).json(user);
+            const { password, ...userData } = user._doc;
+            res.status(200).json(userData);
         } catch (e) {
             console.log(e);
             res.status(500).json(e);
