@@ -1,0 +1,9 @@
+@use '../../styles/colors';
+
+.navbar {
+    .logo a {
+        color: colors.$defaultColor;
+        text-decoration: none;
+        font-size: 1.5rem;
+    }
+}
