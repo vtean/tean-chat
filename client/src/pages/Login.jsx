@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const { loginInfo, updateLoginInfo, loginUser, loginError, isLoginLoading } =
@@ -21,6 +22,7 @@ const Login = () => {
                                     updateLoginInfo({ ...loginInfo, email: e.target.value })
                                 }
                             />
+
                             <Form.Control
                                 type="password"
                                 placeholder="Password"
@@ -28,6 +30,12 @@ const Login = () => {
                                     updateLoginInfo({ ...loginInfo, password: e.target.value })
                                 }
                             />
+
+                            <p>
+                                <span className="me-1">Don't have an account?</span>
+                                <Link to="/register">Register here</Link>
+                            </p>
+
                             <Button
                                 variant="primary"
                                 type="submit">

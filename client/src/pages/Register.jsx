@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const Register = () => {
     const { registerInfo, updateRegisterInfo, registerUser, registerError, isRegisterLoading } =
@@ -21,6 +22,7 @@ const Register = () => {
                                     updateRegisterInfo({ ...registerInfo, name: e.target.value })
                                 }
                             />
+
                             <Form.Control
                                 type="email"
                                 placeholder="Email"
@@ -28,6 +30,7 @@ const Register = () => {
                                     updateRegisterInfo({ ...registerInfo, email: e.target.value })
                                 }
                             />
+
                             <Form.Control
                                 type="password"
                                 placeholder="Password"
@@ -38,6 +41,12 @@ const Register = () => {
                                     })
                                 }
                             />
+
+                            <p>
+                                <span className="me-1">Already have an account?</span>
+                                <Link to="/login">Login here</Link>
+                            </p>
+
                             <Button
                                 variant="primary"
                                 type="submit">
