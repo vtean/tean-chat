@@ -3,13 +3,15 @@ import { Stack } from "react-bootstrap";
 import avatar from "../../assets/avatar.svg";
 import { useContext } from "react";
 import { ChatContext } from "../../context/ChatContext";
+import moment from "moment";
 import "./UserChat.scss";
 
 const UserChat = ({ chat, user }) => {
     const { recipientUser } = useFetchRecipientUser(chat, user);
-    const { currentChat, onlineUsers } = useContext(ChatContext);
+    const { currentChat, onlineUsers, lastMessages } = useContext(ChatContext);
 
     const isOnline = onlineUsers?.some((usr) => usr?.userId === recipientUser?._id);
+    const lastMessage = lastMessages?.find((msg) => msg?.chatId === chat?._id);
 
     return (
         <Stack
@@ -34,11 +36,11 @@ const UserChat = ({ chat, user }) => {
                         {recipientUser?.name}{" "}
                         <span className={isOnline ? "user-online" : "user-offline"}></span>
                     </div>
-                    <div className="text">Text Message</div>
+                    <div className="text">{lastMessage?.text}</div>
                 </div>
             </div>
             <div className="d-flex flex-column align-items-end">
-                <div className="date">01/01/2023</div>
+                <div className="date">{moment(lastMessage?.createdAt).calendar()}</div>
                 <div className="this-user-notifications">3</div>
             </div>
         </Stack>

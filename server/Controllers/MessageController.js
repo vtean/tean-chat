@@ -36,9 +36,12 @@ class MessageModel {
     }
 
     async getLastMessages(req, res) {
-        const { chats } = req.body;
+        const { userId } = req.params;
 
         try {
+            // get all chats where user is a participant
+            const chats = await chatModel.find({ members: { $in: [userId] } });
+
             const chatsId = chats.map((chat) => chat._id);
 
             // get only the last message from each chat, not repeating chats
