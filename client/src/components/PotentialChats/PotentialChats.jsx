@@ -1,11 +1,12 @@
 import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { ChatContext } from "../../../context/ChatContext";
+import { AuthContext } from "../../context/AuthContext";
+import { ChatContext } from "../../context/ChatContext";
 import "./PotentialChats.scss";
 
 const PotentialChats = () => {
     const { user } = useContext(AuthContext);
-    const { potentialChats, createChat, setSendTextMessageError } = useContext(ChatContext);
+    const { potentialChats, createChat, setSendTextMessageError, onlineUsers } =
+        useContext(ChatContext);
     return (
         <>
             <div className="all-users">
@@ -20,7 +21,12 @@ const PotentialChats = () => {
                                     createChat(user._id, u._id);
                                 }}>
                                 {u.name}
-                                <span className="user-online"></span>
+                                <span
+                                    className={
+                                        onlineUsers?.some((usr) => usr?.userId === u?._id)
+                                            ? "user-online"
+                                            : "user-offline"
+                                    }></span>
                             </div>
                         );
                     })}

@@ -63,14 +63,22 @@ a:hover {
 	height: 85vh;
 }
   
-.user-online {
+.user-online,
+.user-offline {
 	display: inline-block;
 	height: 12px;
 	width: 12px;
 	border-radius: 50%;
-	background: rgb(0, 219, 0);
 	margin-left: 3px;
 	z-index: 2;
+}
+
+.user-online {
+	background: rgb(0, 219, 0);
+}
+
+.user-offline {
+	background: rgb(248, 55, 55);
 }
   
 /* Notification */
