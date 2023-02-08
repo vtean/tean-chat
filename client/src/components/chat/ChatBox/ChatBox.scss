@@ -1,0 +1,61 @@
+@use '../../../styles/colors';
+
+/* Chat Box */
+.chat-box {
+	max-height: calc(100vh - 10rem);
+	overflow-y: auto;
+	background: colors.$primaryBg;
+	border-radius: 10px;
+
+    /* Chat Header */
+    .chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem;
+        color: white;
+        background: colors.$secondaryBg;
+    }
+
+    /* Messages */
+    .messages {
+        max-height: calc(100vh - 15rem);
+        overflow-y: auto;
+        padding: 0 2rem;
+    }
+    
+    .message {
+        color: white;
+        background: colors.$bodyBg;
+        padding: 0.75rem;
+        border-radius: 5px;
+        max-width: 50%;
+
+        &.self {
+            color: white;
+            background: colors.$primaryColor;
+        }
+    }
+    
+    .message-footer {
+        font-size: 12px;
+        align-self: flex-end;
+        font-weight: 400;
+    }
+
+    /* Chat Input  */
+    .chat-input {
+        width: 100%;
+        background: #1c1f24;
+        padding: 1rem;
+    }
+
+    .send-btn {
+        border: none;
+        background: colors.$primaryColor;
+        color: white;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+    }
+}

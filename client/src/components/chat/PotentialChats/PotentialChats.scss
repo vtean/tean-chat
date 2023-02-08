@@ -1,0 +1,15 @@
+/* All users */
+.all-users {
+	display: flex;
+	margin-bottom: 1rem;
+
+    .single-user {
+        background: rgb(92 107 129);
+        color: white;
+        cursor: pointer;
+        padding: 5px 7px;
+        border-radius: 10px;
+        margin-right: 0.5rem;
+        position: relative;
+    }
+}

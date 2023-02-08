@@ -1,0 +1,28 @@
+@use '../../../styles/colors';
+
+/* User Card */
+.user-card {
+	color: white;
+	position: relative;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	width: 380px;
+	transition: all .3s ease-in-out;
+	border-radius: 10px;
+
+	.text-content {
+		width: 170px;
+	}
+
+	.name {
+		font-weight: 700;
+	}
+
+	.text, .date {
+		font-size: 14px;
+		color: colors.$textColor;
+	}
+
+	&:hover, &.active {
+		background-color: rgba(255, 255, 255, 0.05);
+	}
+}
