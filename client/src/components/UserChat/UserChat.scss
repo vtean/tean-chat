@@ -1,5 +1,9 @@
 @use '../../styles/colors';
 
+.messages-box {
+	height: 85vh;
+}
+
 /* User Card */
 .user-card {
 	color: white;
@@ -24,5 +28,15 @@
 
 	&:hover, &.active {
 		background-color: rgb(48 58 72);
+	}
+}
+
+@media screen and (max-width: 991px) {
+	.user-card {
+		width: 250px;
+
+		.d-flex:nth-child(2) {
+			display: none !important;
+		}
 	}
 }

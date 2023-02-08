@@ -17,6 +17,10 @@ export const ChatContextProvider = ({ children, user }) => {
     const [newMessage, setNewMessage] = useState(null);
     const [socket, setSocket] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const [lastMessages, setLastMessages] = useState([]);
+    const [isLastMessagesLoading, setIsLastMessagesLoading] = useState(false);
+
+    console.log(lastMessages);
 
     // initialize socket
     useEffect(() => {
@@ -104,6 +108,19 @@ export const ChatContextProvider = ({ children, user }) => {
 
         getUserChats();
     }, [user]);
+
+    useEffect(() => {
+        const getLastMessages = async () => {
+            setIsLastMessagesLoading(true);
+
+            const response = await getRequest(`${baseUrl}/message/last`, JSON.stringify(userChats));
+            setIsLastMessagesLoading(false);
+            if (response.error) return console.log(response);
+
+            setLastMessages(response);
+        };
+        getLastMessages();
+    }, []);
 
     useEffect(() => {
         const getMessages = async () => {

@@ -34,6 +34,34 @@ class MessageModel {
             res.status(500).json(e);
         }
     }
+
+    async getLastMessages(req, res) {
+        const { chats } = req.body;
+
+        try {
+            const chatsId = chats.map((chat) => chat._id);
+
+            // get only the last message from each chat, not repeating chats
+            const lastMessages = [];
+
+            for (let i = 0; i < chatsId.length; i++) {
+                const chatId = chatsId[i];
+                const message = await messageModel.findOne({ chatId }).sort({ createdAt: -1 });
+
+                if (message) {
+                    lastMessages.push(message);
+                } else {
+                    const chat = chats.find((chat) => chat._id === chatId);
+                    lastMessages.push(chat);
+                }
+            }
+
+            res.status(200).json(lastMessages);
+        } catch (e) {
+            console.log(e);
+            res.status(500).json(e);
+        }
+    }
 }
 
 module.exports = new MessageModel();
