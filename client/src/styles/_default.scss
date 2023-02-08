@@ -164,13 +164,13 @@ a:hover {
 /* Chat Input  */
 .chat-input {
 	width: 100%;
-	background: rgb(30, 30, 30);
+	background: #1c1f24;
 	padding: 1rem;
 }
 
 .send-btn {
 	border: none;
-	background: rgba(72, 112, 223, 1);
+	background: colors.$primaryColor;
 	color: white;
 	height: 40px;
 	width: 40px;
