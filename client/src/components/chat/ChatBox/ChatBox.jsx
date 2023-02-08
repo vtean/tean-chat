@@ -2,33 +2,38 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { ChatContext } from "../../../context/ChatContext";
 import { useFetchRecipientUser } from "../../../hooks/useFetchRecipient";
-import { Stack } from "react-bootstrap";
+import { Stack, Alert } from "react-bootstrap";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 import "./ChatBox.scss";
 
 const ChatBox = () => {
     const { user } = useContext(AuthContext);
-    const { currentChat, messages, isMessagesLoading, sendTextMessage } = useContext(ChatContext);
+    const { currentChat, messages, isMessagesLoading, sendTextMessage, sendTextMessageError } =
+        useContext(ChatContext);
     const { recipientUser } = useFetchRecipientUser(currentChat, user);
     const [textMessage, setTextMessage] = useState("");
 
     if (!recipientUser)
         return (
-            <p
-                className="text-center"
+            <Stack
+                className="chat-box justify-content-center align-items-center"
                 style={{ width: "100%" }}>
-                Choose a person to start chatting!
-            </p>
+                <span>
+                    <strong>Choose a person to start chatting!</strong>
+                </span>
+            </Stack>
         );
 
     if (isMessagesLoading)
         return (
-            <p
-                className="text-center"
+            <Stack
+                className="chat-box justify-content-center align-items-center"
                 style={{ width: "100%" }}>
-                Loading...
-            </p>
+                <span>
+                    <strong>Loading...</strong>
+                </span>
+            </Stack>
         );
 
     return (
@@ -57,6 +62,11 @@ const ChatBox = () => {
                         </Stack>
                     ))}
             </Stack>
+            {sendTextMessageError && (
+                <Alert variant="danger">
+                    <p>{sendTextMessageError}</p>
+                </Alert>
+            )}
             <Stack
                 direction="horizontal"
                 gap={3}

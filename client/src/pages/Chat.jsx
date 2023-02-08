@@ -8,7 +8,8 @@ import ChatBox from "../components/chat/ChatBox/ChatBox";
 
 const Chat = () => {
     const { user } = useContext(AuthContext);
-    const { userChats, isUserChatsLoading, updateCurrentChat } = useContext(ChatContext);
+    const { userChats, isUserChatsLoading, updateCurrentChat, setSendTextMessageError } =
+        useContext(ChatContext);
 
     return (
         <Container>
@@ -26,7 +27,10 @@ const Chat = () => {
                             return (
                                 <div
                                     key={index}
-                                    onClick={() => updateCurrentChat(chat)}>
+                                    onClick={() => {
+                                        setSendTextMessageError(null);
+                                        updateCurrentChat(chat);
+                                    }}>
                                     <UserChat
                                         chat={chat}
                                         user={user}

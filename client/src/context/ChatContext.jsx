@@ -75,7 +75,9 @@ export const ChatContextProvider = ({ children, user }) => {
 
     const sendTextMessage = useCallback(
         async (textMessage, sender, currentChatId, setTextMessage) => {
-            if (!textMessage) return console.log("You must type something.");
+            if (!textMessage) return setSendTextMessageError("Your message cannot be empty!");
+
+            setSendTextMessageError(null);
 
             const response = await postRequest(
                 `${baseUrl}/message`,
@@ -129,6 +131,7 @@ export const ChatContextProvider = ({ children, user }) => {
                 sendTextMessage,
                 newMessage,
                 sendTextMessageError,
+                setSendTextMessageError,
             }}>
             {children}
         </ChatContext.Provider>
