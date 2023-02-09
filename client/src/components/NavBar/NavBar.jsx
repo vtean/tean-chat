@@ -2,11 +2,11 @@ import { useContext } from "react";
 import { Container, Nav, Navbar, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import Notification from "../Notification/Notification";
+import UserNav from "../UserNav/UserNav";
 import "./NavBar.scss";
 
 const NavBar = () => {
-    const { user, logoutUser } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
     return (
         <Navbar
@@ -27,13 +27,7 @@ const NavBar = () => {
                         gap={3}>
                         {user && (
                             <>
-                                <Notification />
-                                <Link
-                                    onClick={() => logoutUser()}
-                                    to="/login"
-                                    className="link-light text-decoration-none">
-                                    Logout
-                                </Link>
+                                <UserNav />
                             </>
                         )}
 

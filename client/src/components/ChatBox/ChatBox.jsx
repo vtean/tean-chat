@@ -6,6 +6,8 @@ import { Stack, Alert } from "react-bootstrap";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 import "./ChatBox.scss";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const ChatBox = () => {
     const { user } = useContext(AuthContext);
@@ -32,13 +34,17 @@ const ChatBox = () => {
 
     if (isMessagesLoading)
         return (
-            <Stack
-                className="chat-box justify-content-center align-items-center"
+            <div
+                className="chat-box"
                 style={{ width: "100%" }}>
-                <span>
-                    <strong>Loading...</strong>
-                </span>
-            </Stack>
+                <SkeletonTheme
+                    baseColor="#272d36"
+                    highlightColor="#303a48">
+                    <Skeleton height={42} />
+                    <Skeleton height={652} />
+                    <Skeleton height={80} />
+                </SkeletonTheme>
+            </div>
         );
 
     return (

@@ -28,6 +28,7 @@ class MessageModel {
 
         try {
             const messages = await messageModel.find({ chatId });
+            // await new Promise((resolve) => setTimeout(resolve, 100000));
             res.status(200).json(messages);
         } catch (e) {
             console.log(e);

@@ -5,8 +5,16 @@ import "./PotentialChats.scss";
 
 const PotentialChats = () => {
     const { user } = useContext(AuthContext);
-    const { potentialChats, createChat, setSendTextMessageError, onlineUsers } =
-        useContext(ChatContext);
+    const {
+        potentialChats,
+        isPotentialChatsLoading,
+        createChat,
+        setSendTextMessageError,
+        onlineUsers,
+    } = useContext(ChatContext);
+
+    if (isPotentialChatsLoading) return <span>Loading potential chats...</span>;
+
     return (
         <>
             <div className="all-users">
