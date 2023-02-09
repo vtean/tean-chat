@@ -29,7 +29,16 @@ io.on("connection", (socket) => {
     socket.on("sendMessage", (message) => {
         const user = onlineUsers?.find((user) => user.userId === message.recipientId);
 
-        if (user) io.to(user.socketId).emit("getMessage", message);
+        if (user) {
+            io.to(user.socketId).emit("getMessage", message);
+            if (message.senderId) {
+                io.to(user.socketId).emit("getNotifications", {
+                    senderId: message.senderId,
+                    isRead: false,
+                    date: new Date(),
+                });
+            }
+        }
     });
 
     // update last messages

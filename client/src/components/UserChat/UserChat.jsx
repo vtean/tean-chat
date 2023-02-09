@@ -5,13 +5,17 @@ import { useContext } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import Moment from "react-moment";
 import "./UserChat.scss";
+import { unreadNotificationsFunc } from "../../utils/unreadNotifications";
 
 const UserChat = ({ chat, user }) => {
     const { recipientUser } = useFetchRecipientUser(chat, user);
-    const { currentChat, onlineUsers, lastMessages } = useContext(ChatContext);
+    const { currentChat, onlineUsers, lastMessages, notifications, markThisUserNotificationsRead } =
+        useContext(ChatContext);
 
     const isOnline = onlineUsers?.some((usr) => usr?.userId === recipientUser?._id);
     const lastMessage = lastMessages?.find((msg) => msg?.chatId === chat?._id);
+    const unreadNotifications = unreadNotificationsFunc(notifications);
+    const userNotifications = unreadNotifications?.filter((n) => n.senderId === recipientUser?._id);
 
     return (
         <Stack
@@ -22,7 +26,11 @@ const UserChat = ({ chat, user }) => {
                     ? "user-card active align-items-center p-2 justify-content-between"
                     : "user-card align-items-center p-2 justify-content-between"
             }`}
-            role="button">
+            role="button"
+            onClick={() => {
+                if (userNotifications.length > 0)
+                    markThisUserNotificationsRead(userNotifications, notifications);
+            }}>
             <div className="d-flex">
                 <div className="me-2">
                     <img
@@ -41,9 +49,11 @@ const UserChat = ({ chat, user }) => {
             </div>
             <div className="d-flex flex-column align-items-end">
                 <div className="date">
-                    <Moment format="YYYY/MM/DD">{lastMessage?.createdAt}</Moment>
+                    <Moment format="DD/MM/YYYY">{lastMessage?.createdAt}</Moment>
                 </div>
-                {/* <div className="this-user-notifications">3</div> */}
+                {userNotifications.length > 0 && (
+                    <div className="this-user-notifications">{userNotifications.length}</div>
+                )}
             </div>
         </Stack>
     );
