@@ -65,6 +65,25 @@ class MessageModel {
             res.status(500).json(e);
         }
     }
+
+    async updateReadStatus(req, res) {
+        const { messageId } = req.params;
+        const { readStatus } = req.body;
+
+        try {
+            const message = messageModel.findById(messageId);
+
+            if (!message) return res.status(400).json("Message not found.");
+
+            message.read = readStatus;
+            const response = await message.save();
+
+            res.status(200).json(response);
+        } catch (e) {
+            console.log(e);
+            res.status(500).json(e);
+        }
+    }
 }
 
 module.exports = new MessageModel();
