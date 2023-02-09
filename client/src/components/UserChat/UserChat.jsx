@@ -3,7 +3,7 @@ import { Stack } from "react-bootstrap";
 import avatar from "../../assets/avatar.svg";
 import { useContext } from "react";
 import { ChatContext } from "../../context/ChatContext";
-import moment from "moment";
+import Moment from "react-moment";
 import "./UserChat.scss";
 
 const UserChat = ({ chat, user }) => {
@@ -40,7 +40,9 @@ const UserChat = ({ chat, user }) => {
                 </div>
             </div>
             <div className="d-flex flex-column align-items-end">
-                <div className="date">{moment(lastMessage?.createdAt).calendar()}</div>
+                <div className="date">
+                    <Moment format="YYYY/MM/DD">{lastMessage?.createdAt}</Moment>
+                </div>
                 <div className="this-user-notifications">3</div>
             </div>
         </Stack>

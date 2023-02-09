@@ -49,7 +49,29 @@ export const ChatContextProvider = ({ children, user }) => {
         const recipientId = currentChat?.members?.find((id) => id !== user?._id);
 
         socket.emit("sendMessage", { ...newMessage, recipientId });
+
+        const getLastMessages = async () => {
+            const messages = await getRequest(`${baseUrl}/message/last/${recipientId}`);
+            socket.emit("updateLastMessages", { recipientId, messages });
+        };
+
+        getLastMessages();
     }, [newMessage]);
+
+    console.log(lastMessages);
+
+    // get last messages
+    useEffect(() => {
+        if (socket === null) return;
+
+        socket.on("getLastMessages", (res) => {
+            setLastMessages(res);
+        });
+
+        return () => {
+            socket.off("getLastMessages");
+        };
+    }, [socket, currentChat]);
 
     // receive message
     useEffect(() => {

@@ -32,6 +32,14 @@ io.on("connection", (socket) => {
         if (user) io.to(user.socketId).emit("getMessage", message);
     });
 
+    // update last messages
+    socket.on("updateLastMessages", (response) => {
+        const user = onlineUsers?.find((user) => user.userId === response.recipientId);
+        console.log("updateLastMessages", response.messages);
+
+        if (user) io.to(user.socketId).emit("getLastMessages", response.messages);
+    });
+
     socket.on("disconnect", () => {
         onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
         io.emit("getOnlineUsers", onlineUsers);
