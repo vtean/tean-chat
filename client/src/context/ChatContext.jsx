@@ -40,7 +40,7 @@ export const ChatContextProvider = ({ children, user }) => {
         return () => {
             socket.off("getOnlineUsers");
         };
-    }, [socket]);
+    }, [user, socket]);
 
     // send message
     useEffect(() => {
@@ -56,9 +56,7 @@ export const ChatContextProvider = ({ children, user }) => {
         };
 
         getLastMessages();
-    }, [newMessage]);
-
-    console.log(lastMessages);
+    }, [user, socket, currentChat, newMessage]);
 
     // get last messages
     useEffect(() => {

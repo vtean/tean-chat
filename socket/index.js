@@ -35,7 +35,6 @@ io.on("connection", (socket) => {
     // update last messages
     socket.on("updateLastMessages", (response) => {
         const user = onlineUsers?.find((user) => user.userId === response.recipientId);
-        console.log("updateLastMessages", response.messages);
 
         if (user) io.to(user.socketId).emit("getLastMessages", response.messages);
     });

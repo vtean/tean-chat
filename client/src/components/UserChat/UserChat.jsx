@@ -43,7 +43,7 @@ const UserChat = ({ chat, user }) => {
                 <div className="date">
                     <Moment format="YYYY/MM/DD">{lastMessage?.createdAt}</Moment>
                 </div>
-                <div className="this-user-notifications">3</div>
+                {/* <div className="this-user-notifications">3</div> */}
             </div>
         </Stack>
     );
