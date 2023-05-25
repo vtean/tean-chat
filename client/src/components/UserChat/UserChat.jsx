@@ -9,8 +9,14 @@ import { unreadNotificationsFunc } from "../../utils/unreadNotifications";
 
 const UserChat = ({ chat, user }) => {
     const { recipientUser } = useFetchRecipientUser(chat, user);
-    const { currentChat, onlineUsers, lastMessages, notifications, markThisUserNotificationsRead } =
-        useContext(ChatContext);
+    const {
+        currentChat,
+        onlineUsers,
+        lastMessages,
+        notifications,
+        markThisUserNotificationsRead,
+        markAllMessagesRead,
+    } = useContext(ChatContext);
 
     const isOnline = onlineUsers?.some((usr) => usr?.userId === recipientUser?._id);
     const lastMessage = lastMessages?.find((msg) => msg?.chatId === chat?._id);
@@ -30,6 +36,7 @@ const UserChat = ({ chat, user }) => {
             onClick={() => {
                 if (userNotifications.length > 0)
                     markThisUserNotificationsRead(userNotifications, notifications);
+                markAllMessagesRead(recipientUser, chat?.id);
             }}>
             <div className="d-flex">
                 <div className="me-2">
