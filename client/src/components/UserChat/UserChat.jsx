@@ -1,13 +1,13 @@
 import { useFetchRecipientUser } from "../../hooks/useFetchRecipient";
 import { Stack } from "react-bootstrap";
 import avatar from "../../assets/avatar.svg";
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import Moment from "react-moment";
 import "./UserChat.scss";
 import { unreadNotificationsFunc } from "../../utils/unreadNotifications";
 
-const UserChat = ({ chat, user }) => {
+const UserChat = memo(({ chat, user }) => {
     const { recipientUser } = useFetchRecipientUser(chat, user);
     const {
         currentChat,
@@ -64,6 +64,8 @@ const UserChat = ({ chat, user }) => {
             </div>
         </Stack>
     );
-};
+});
+
+UserChat.displayName = "UserChat";
 
 export default UserChat;

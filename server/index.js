@@ -15,12 +15,10 @@ app.use("/api", router);
 app.listen(PORT, (req, res) => {
     console.log(`Your awesome server is running on port ${PORT}`);
 });
+
+// Mongoose 8: strictQuery is true by default, useNewUrlParser and useUnifiedTopology are no longer needed
 mongoose
-    .set("strictQuery", true)
-    .connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+    .connect(process.env.MONGO_URI)
     .then(() => {
         console.log("Connected to your amazing database!");
     })

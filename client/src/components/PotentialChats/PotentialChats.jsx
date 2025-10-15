@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 import "./PotentialChats.scss";
 
-const PotentialChats = () => {
+const PotentialChats = memo(() => {
     const { user } = useContext(AuthContext);
     const {
         potentialChats,
@@ -19,11 +19,11 @@ const PotentialChats = () => {
         <>
             <div className="all-users">
                 {potentialChats &&
-                    potentialChats.map((u, index) => {
+                    potentialChats.map((u) => {
                         return (
                             <div
                                 className="single-user"
-                                key={index}
+                                key={u._id}
                                 onClick={() => {
                                     setSendTextMessageError(null);
                                     createChat(user._id, u._id);
@@ -41,6 +41,8 @@ const PotentialChats = () => {
             </div>
         </>
     );
-};
+});
+
+PotentialChats.displayName = "PotentialChats";
 
 export default PotentialChats;

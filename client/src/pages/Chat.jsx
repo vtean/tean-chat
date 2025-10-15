@@ -26,10 +26,10 @@ const Chat = () => {
                     <Stack
                         className="messages-box flex-grow-0 pe-3"
                         gap={3}>
-                        {userChats?.map((chat, index) => {
+                        {userChats?.map((chat) => {
                             return (
                                 <div
-                                    key={index}
+                                    key={chat._id}
                                     onClick={() => {
                                         setSendTextMessageError(null);
                                         updateCurrentChat(chat);

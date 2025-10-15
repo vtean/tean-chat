@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState, useMemo } from "react";
 import { baseUrl, socketUrl, getRequest, postRequest } from "../utils/services";
 import { io } from "socket.io-client";
 
@@ -48,11 +48,12 @@ export const ChatContextProvider = ({ children, user }) => {
         };
     }, [user, socket]);
 
-    // send message
+    // send message - OPTIMIZED: only run when newMessage actually changes and is not null
     useEffect(() => {
-        if (socket === null) return;
+        if (socket === null || !newMessage) return;
 
         const recipientId = currentChat?.members?.find((id) => id !== user?._id);
+        if (!recipientId) return;
 
         socket.emit("sendMessage", { ...newMessage, recipientId });
 
@@ -69,7 +70,7 @@ export const ChatContextProvider = ({ children, user }) => {
         };
 
         getUnreadMessages();
-    }, [user, socket, currentChat, newMessage]);
+    }, [newMessage, socket]); // Removed user and currentChat to prevent unnecessary runs
 
     // get last messages
     useEffect(() => {
@@ -289,34 +290,58 @@ export const ChatContextProvider = ({ children, user }) => {
         return response;
     }, []);
 
-    return (
-        <ChatContext.Provider
-            value={{
-                userChats,
-                isUserChatsLoading,
-                userChatsError,
-                potentialChats,
-                createChat,
-                updateCurrentChat,
-                currentChat,
-                messages,
-                isMessagesLoading,
-                messagesError,
-                sendTextMessage,
-                newMessage,
-                sendTextMessageError,
-                setSendTextMessageError,
-                onlineUsers,
-                lastMessages,
-                notifications,
-                allUsers,
-                markNotificationsRead,
-                markNotificationRead,
-                markThisUserNotificationsRead,
-                isPotentialChatsLoading,
-                markAllMessagesRead,
-            }}>
-            {children}
-        </ChatContext.Provider>
+    // Memoize context value to prevent unnecessary re-renders
+    const contextValue = useMemo(
+        () => ({
+            userChats,
+            isUserChatsLoading,
+            userChatsError,
+            potentialChats,
+            createChat,
+            updateCurrentChat,
+            currentChat,
+            messages,
+            isMessagesLoading,
+            messagesError,
+            sendTextMessage,
+            newMessage,
+            sendTextMessageError,
+            setSendTextMessageError,
+            onlineUsers,
+            lastMessages,
+            notifications,
+            allUsers,
+            markNotificationsRead,
+            markNotificationRead,
+            markThisUserNotificationsRead,
+            isPotentialChatsLoading,
+            markAllMessagesRead,
+        }),
+        [
+            userChats,
+            isUserChatsLoading,
+            userChatsError,
+            potentialChats,
+            createChat,
+            updateCurrentChat,
+            currentChat,
+            messages,
+            isMessagesLoading,
+            messagesError,
+            sendTextMessage,
+            newMessage,
+            sendTextMessageError,
+            onlineUsers,
+            lastMessages,
+            notifications,
+            allUsers,
+            markNotificationsRead,
+            markNotificationRead,
+            markThisUserNotificationsRead,
+            isPotentialChatsLoading,
+            markAllMessagesRead,
+        ]
     );
+
+    return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;
 };
