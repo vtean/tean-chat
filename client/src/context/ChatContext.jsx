@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState, useMemo } from "react";
+import { createContext, useCallback, useEffect, useState, useMemo, useRef } from "react";
 import { baseUrl, socketUrl, getRequest, postRequest } from "../utils/services";
 import { io } from "socket.io-client";
 
@@ -23,7 +23,17 @@ export const ChatContextProvider = ({ children, user }) => {
     const [allUsers, setAllUsers] = useState([]);
     const [unreadMessages, setUnreadMessages] = useState([]);
 
-    console.log(unreadMessages);
+    // Use refs to store latest values for socket callbacks
+    const currentChatRef = useRef(currentChat);
+    const messagesRef = useRef(messages);
+
+    useEffect(() => {
+        currentChatRef.current = currentChat;
+    }, [currentChat]);
+
+    useEffect(() => {
+        messagesRef.current = messages;
+    }, [messages]);
 
     // initialize socket
     useEffect(() => {
@@ -90,28 +100,34 @@ export const ChatContextProvider = ({ children, user }) => {
         };
     }, [socket, currentChat]);
 
-    // receive message && notifications
+    // receive message && notifications - CRITICAL: Use refs to avoid dependencies
     useEffect(() => {
         if (socket === null) return;
 
-        socket.on("getMessage", (res) => {
-            if (currentChat?._id !== res.chatId) return;
+        const handleMessage = (res) => {
+            if (currentChatRef.current?._id !== res.chatId) return;
 
-            messages ? setMessages((prev) => [...prev, res]) : setMessages([res]);
-        });
+            setMessages((prev) => (prev ? [...prev, res] : [res]));
+        };
 
-        socket.on("getNotifications", (res) => {
-            const isChatOpen = currentChat?.members.some((id) => id === res.senderId);
+        const handleNotifications = (res) => {
+            const isChatOpen = currentChatRef.current?.members.some((id) => id === res.senderId);
 
-            if (isChatOpen) setNotifications((prev) => [{ ...res, isRead: true }, ...prev]);
-            else setNotifications((prev) => [res, ...prev]);
-        });
+            if (isChatOpen) {
+                setNotifications((prev) => [{ ...res, isRead: true }, ...prev]);
+            } else {
+                setNotifications((prev) => [res, ...prev]);
+            }
+        };
+
+        socket.on("getMessage", handleMessage);
+        socket.on("getNotifications", handleNotifications);
 
         return () => {
-            socket.off("getMessage");
-            socket.off("getNotifications");
+            socket.off("getMessage", handleMessage);
+            socket.off("getNotifications", handleNotifications);
         };
-    }, [socket, currentChat, messages]);
+    }, [socket]); // ONLY socket dependency - no state dependencies!
 
     useEffect(() => {
         const getUsers = async () => {

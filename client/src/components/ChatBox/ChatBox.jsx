@@ -1,25 +1,52 @@
-import { useContext, useEffect, useRef, useState, memo } from "react";
+import { useContext, useEffect, useRef, useState, memo, useCallback } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { ChatContext } from "../../context/ChatContext";
+import { useMessagesState, useMessagesDispatch } from "../../context/MessagesContext";
+import { useChatsState } from "../../context/ChatsContext";
 import { useFetchRecipientUser } from "../../hooks/useFetchRecipient";
 import { Stack, Alert } from "react-bootstrap";
-import moment from "moment";
 import InputEmoji from "react-input-emoji";
+import Message from "./Message";
 import "./ChatBox.scss";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const ChatBox = memo(() => {
     const { user } = useContext(AuthContext);
-    const { currentChat, messages, isMessagesLoading, sendTextMessage, sendTextMessageError } =
-        useContext(ChatContext);
+
+    // Use separate contexts to minimize re-renders
+    const { messages, isMessagesLoading, sendTextMessageError } = useMessagesState();
+    const { sendTextMessage, setSendTextMessageError } = useMessagesDispatch();
+    const { currentChat } = useChatsState();
+
     const { recipientUser } = useFetchRecipientUser(currentChat, user);
     const [textMessage, setTextMessage] = useState("");
     const scroll = useRef();
 
+    // Only trigger scroll on message count change
+    const messagesLength = messages?.length || 0;
     useEffect(() => {
-        scroll.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+        if (scroll.current && messagesLength > 0) {
+            scroll.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messagesLength]);
+
+    // Memoize send handler
+    const handleSendMessage = useCallback(() => {
+        if (currentChat && user && textMessage.trim()) {
+            sendTextMessage(textMessage, user, currentChat._id, setTextMessage);
+        }
+    }, [textMessage, user, currentChat, sendTextMessage]);
+
+    // Handle Enter key
+    const handleKeyPress = useCallback(
+        (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        },
+        [handleSendMessage]
+    );
 
     if (!recipientUser)
         return (
@@ -59,19 +86,13 @@ const ChatBox = memo(() => {
                 className="messages">
                 {messages &&
                     messages.map((message, index) => (
-                        <Stack
+                        <Message
                             key={message._id || `msg-${index}`}
-                            className={`${
-                                message?.senderId === user?._id
-                                    ? "message self align-self-end flex-grow-0"
-                                    : "message align-self-start flex-grow-0"
-                            }`}
-                            ref={index === messages.length - 1 ? scroll : null}>
-                            <span>{message.text}</span>
-                            <span className="message-footer">
-                                {moment(message.createdAt).calendar()}
-                            </span>
-                        </Stack>
+                            message={message}
+                            isOwnMessage={message?.senderId === user?._id}
+                            isLast={index === messages.length - 1}
+                            scrollRef={scroll}
+                        />
                     ))}
             </Stack>
             {sendTextMessageError && (
@@ -88,12 +109,12 @@ const ChatBox = memo(() => {
                     onChange={setTextMessage}
                     fontFamily="Nunito"
                     borderColor="rgba(72, 112, 223, 0.2)"
+                    onEnter={handleSendMessage}
+                    onKeyDown={handleKeyPress}
                 />
                 <button
                     className="send-btn"
-                    onClick={() =>
-                        sendTextMessage(textMessage, user, currentChat._id, setTextMessage)
-                    }>
+                    onClick={handleSendMessage}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"

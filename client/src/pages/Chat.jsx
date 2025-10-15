@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { ChatContext } from "../context/ChatContext";
+import { useChatsState } from "../context/ChatsContext";
+import { useMessagesDispatch } from "../context/MessagesContext";
 import { Container, Stack } from "react-bootstrap";
 import UserChat from "../components/UserChat/UserChat";
 import { AuthContext } from "../context/AuthContext";
@@ -8,8 +9,8 @@ import ChatBox from "../components/ChatBox/ChatBox";
 
 const Chat = () => {
     const { user } = useContext(AuthContext);
-    const { userChats, isUserChatsLoading, updateCurrentChat, setSendTextMessageError } =
-        useContext(ChatContext);
+    const { userChats, isUserChatsLoading } = useChatsState();
+    const { setSendTextMessageError } = useMessagesDispatch();
 
     return (
         <Container>
@@ -28,12 +29,7 @@ const Chat = () => {
                         gap={3}>
                         {userChats?.map((chat) => {
                             return (
-                                <div
-                                    key={chat._id}
-                                    onClick={() => {
-                                        setSendTextMessageError(null);
-                                        updateCurrentChat(chat);
-                                    }}>
+                                <div key={chat._id}>
                                     <UserChat
                                         chat={chat}
                                         user={user}
