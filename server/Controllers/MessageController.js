@@ -67,6 +67,19 @@ class MessageModel {
         }
     }
 
+    // get unread messages
+    async getUnreadMessages(req, res) {
+        const { userId } = req.params;
+
+        try {
+            const messages = await messageModel.find({ receiverId: userId, isRead: false });
+            res.status(200).json(messages);
+        } catch (e) {
+            console.log(e);
+            res.status(500).json(e);
+        }
+    }
+
     async updateReadStatus(req, res) {
         const { messageId } = req.params;
         const { readStatus } = req.body;
@@ -80,6 +93,21 @@ class MessageModel {
             const response = await message.save();
 
             res.status(200).json(response);
+        } catch (e) {
+            console.log(e);
+            res.status(500).json(e);
+        }
+    }
+
+    // update read status for all user's messages
+    async readAllMessages(req, res) {
+        const { userId } = req.params;
+        const { chatId } = req.body;
+
+        try {
+            await messageModel.updateMany({ receiverId: userId, _id: chatId }, { isRead: true });
+
+            res.status(200).json("All messages read.");
         } catch (e) {
             console.log(e);
             res.status(500).json(e);

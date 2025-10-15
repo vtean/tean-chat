@@ -21,6 +21,9 @@ export const ChatContextProvider = ({ children, user }) => {
     const [lastMessages, setLastMessages] = useState([]);
     const [notifications, setNotifications] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
+    const [unreadMessages, setUnreadMessages] = useState([]);
+
+    console.log(unreadMessages);
 
     // initialize socket
     useEffect(() => {
@@ -59,6 +62,13 @@ export const ChatContextProvider = ({ children, user }) => {
         };
 
         getLastMessages();
+
+        const getUnreadMessages = async () => {
+            const messages = await getRequest(`${baseUrl}/message/unread/${recipientId}`);
+            socket.emit("updateUnreadMessages", { recipientId, messages });
+        };
+
+        getUnreadMessages();
     }, [user, socket, currentChat, newMessage]);
 
     // get last messages
@@ -69,8 +79,13 @@ export const ChatContextProvider = ({ children, user }) => {
             setLastMessages(res);
         });
 
+        socket.on("getUnreadMessages", (res) => {
+            setUnreadMessages(res);
+        });
+
         return () => {
             socket.off("getLastMessages");
+            socket.off("getUnreadMessages");
         };
     }, [socket, currentChat]);
 
@@ -265,6 +280,15 @@ export const ChatContextProvider = ({ children, user }) => {
         setNotifications(mNotifications);
     }, []);
 
+    const markAllMessagesRead = useCallback((userId, chatId) => {
+        const response = postRequest(
+            `${baseUrl}/message/readAll/${userId}`,
+            JSON.stringify({ chatId, isRead: true })
+        );
+        if (response.error) return setUserChatsError(response);
+        return response;
+    }, []);
+
     return (
         <ChatContext.Provider
             value={{
@@ -290,6 +314,7 @@ export const ChatContextProvider = ({ children, user }) => {
                 markNotificationRead,
                 markThisUserNotificationsRead,
                 isPotentialChatsLoading,
+                markAllMessagesRead,
             }}>
             {children}
         </ChatContext.Provider>
